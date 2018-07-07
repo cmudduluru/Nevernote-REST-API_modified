@@ -22,13 +22,16 @@ This API provides the following resources mapped to the respective HTTP methods 
 }
 
 This API also provides the following resources mapped to the respective HTTP methods which supports CRUD operations for notes for a specified Notebook.
-HTTP Method   Available URI	                                     Summary
-POST	        /notebooks/{notebookName}/notes       	   To create a note in the specified notebook
-GET        	  /notebooks/{notebookName}/notes/{title}	   To get a specific note detail in the specified notebook
-GET	          /notebooks/{notebookName}/notes          	 To get all the notes associated to the specified notebook
-GET         	/notebooks/{notebookName}/{tag}	           Given a notebook, get filtered list of notes that contain the given tag string.
-PUT	          /notebooks/{notebookName}/notes/{title}	   To update a specific note associated with the given notebook
-DELETE      	/notebooks/{notebookName}/notes/{title}	   To delete a specific note associated with the given notebook
+
+| HTTP Method | Available URI	 |   Summary |
+| --- | --- | --- |
+| POST | /notebooks/{notebookName}/notes | To create a note in the specified notebook |
+| GET | /notebooks/{notebookName}/notes/{title} | To get a specific note detail in the specified notebook |
+| GET | /notebooks/{notebookName}/notes | To get all the notes associated to the specified notebook |
+| GET | /notebooks/{notebookName}/{tag} | Given a notebook, get filtered list of notes that contain the given tag string |
+| PUT | /notebooks/{notebookName}/notes/{title} | To update a specific note associated with the given notebook |
+| DELETE | /notebooks/{notebookName}/notes/{title} | To delete a specific note associated with the given notebook |
+
 
 Example Model to create a new note using POST method for a specific Notebook
 {
@@ -40,7 +43,7 @@ Example Model to create a new note using POST method for a specific Notebook
 
 }
 
->> Here is the example model that can be seen when GET method is used:
+Here is the example model that can be seen when GET method is used:
 // "tags" - This is a string Array
 // "createdTime" - This is set with the LocalDateTime value when a new note is created
 // "lastModified" - This is set with the LocalDateTime value when a note is updated
@@ -52,7 +55,8 @@ Example Model to create a new note using POST method for a specific Notebook
   "lastModified": null
 }
 
-Tools, technologies used for developing this API: 
+#Tools, technologies used for developing this API: 
+
 Java 1.8.0_171
 Maven
 Spring framework 2.0.3
