@@ -1,5 +1,5 @@
-
-                                        **NEVERNOTE -API**
+ 
+ #**NEVERNOTE-REST-API**
                                         
 This project is a Nevernote REST API developed using Java and Maven.
 
