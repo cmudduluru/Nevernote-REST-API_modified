@@ -1,17 +1,21 @@
 
-                                        # NEVERNOTE -API
+                                        #NEVERNOTE -API
+                                        
 This project is a Nevernote REST API developed using Java and Maven.
 
-Base URI: http://localhost:9000/
+| Base URI | http://localhost:9000/ |
 
 This API provides the following resources mapped to the respective HTTP methods which supports creation, deletion of Notebooks and to retrieve a specific Notebook or all Notebooks. 
-HTTP Method   Available URI	                         Summary
-POST	        /notebooks	                      To create a notebook
-GET	          /notebooks/{notebookName}       	To get a specific notebook detail
-GET         	/notebooks                      	To get the details of all the notebooks
-DELETE      	/notebooks/{notebookName}	        To delete a specific notebook
 
->> Example Model to create a new notebook using POST method and then use GET method to see the contents:
+| HTTP Method | Available URI	 |   Summary |
+| --- | --- | --- |
+| POST | /notebooks | To create a notebook |
+|  GET | /notebooks/{notebookName} | To get a specific notebook detail |
+|  GET | /notebooks | To get the details of all the notebooks |
+| DELETE | /notebooks/{notebookName} | To delete a specific notebook |
+
+
+ Example Model to create a new notebook using POST method and then use GET method to see the contents:
 {
   "name": "string"
   "description": "string",
@@ -26,7 +30,7 @@ GET         	/notebooks/{notebookName}/{tag}	           Given a notebook, get fi
 PUT	          /notebooks/{notebookName}/notes/{title}	   To update a specific note associated with the given notebook
 DELETE      	/notebooks/{notebookName}/notes/{title}	   To delete a specific note associated with the given notebook
 
->> Example Model to create a new note using POST method for a specific Notebook
+Example Model to create a new note using POST method for a specific Notebook
 {
   "title": "string",
   "body": "string",
