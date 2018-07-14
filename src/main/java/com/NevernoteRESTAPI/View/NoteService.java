@@ -23,59 +23,51 @@ public class NoteService {
 	//Creating a HashMap object
 	public HashMap<String, List<Note>> noteHashMap = new HashMap<String, List<Note>>();
 	
-	
-	// *** this method creates a Note and sets the created time stamp *** 
+        // *** this method creates a Note and sets the created time stamp *** 
 	public void createNote(String notebookName, Note note) {
-		
-		// create note to the given notebook if it exists in notebookHashMap, otherwise throw exception
-		if(notebookService.notebookHashMap.containsKey(notebookName)) {
-		
+				
+		checkIfgivenNotebookExistsInNotebookHashMap(notebookName);
+		chechIfgivenNoteTitleIsEmptyinJSON(note);
+			
 		if(!noteHashMap.containsKey(notebookName)) {
 			note.setCreatedTime(LocalDateTime.now());
 			noteHashMap.put(notebookName, Arrays.asList(note));
 		}
 		else {
-			//Getting Collection of values from HashMap
+			 //Getting Collection of values from HashMap
 			Collection<Note> values = noteHashMap.get(notebookName);
 			
 			//Creating an ArrayList of values
 			ArrayList<Note> listOfValues = new ArrayList<Note>(values);
+		
+			checkIfgivenNoteAlreadyExistsInNoteHashMap(listOfValues, note);
+			
+			// create the new note 
 			note.setCreatedTime(LocalDateTime.now());
             listOfValues.add(note);
-			noteHashMap.put(notebookName, listOfValues);
+			noteHashMap.put(notebookName, listOfValues);	
 		}	
-		
-		}
-		
-		else throw new CustomException("Given notebook '" + notebookName + "' doesn't exist, so cannot create a note");
-	
 	}
 
 	// *** this method retrieves all the notes specified for a notebook name *** 
 	public List<Note> retreiveAllNotes(String notebookName) {
-	// check if the given notebook exists in notebookHashMap, otherwise throw exception
-	if(notebookService.notebookHashMap.containsKey(notebookName)) {
+		checkIfgivenNotebookExistsInNotebookHashMap(notebookName);	
 		return noteHashMap.get(notebookName);	
-	}
-	else throw new CustomException("Given notebook '" + notebookName + "' doesn't exist, so cannot retrive any notes");	
-   }
+ }
 		
 
 	// *** this method retrieves the Note contents for the specified Note title *** 
 	public Note retreiveNote(String notebookName, String noteTitle) {
-		// check if the given notebook exists in notebookHashMap, otherwise throw exception
-		if(notebookService.notebookHashMap.containsKey(notebookName)) {
+		checkIfgivenNotebookExistsInNotebookHashMap(notebookName);
+		checkIfgivenNoteExistsInNoteHashMap(notebookName, noteTitle);
 	      return noteHashMap.get(notebookName).stream().filter(n->n.getTitle().equals(noteTitle)).findFirst().get();
-		}
-		
-		else throw new CustomException("Given notebook '" + notebookName + "' doesn't exist, so cannot retrive any note");	
 	}
 	
 	
 	// *** this method retrieves available Notes filtered using the tag *** 
 	public List<Note> FilterNotesbyTag(String notebookName, String tag) {
-		// check if the given notebook exists in notebookHashMap, otherwise throw exception
-	    if(notebookService.notebookHashMap.containsKey(notebookName)) {
+		checkIfgivenNotebookExistsInNotebookHashMap(notebookName);
+		
 		//Getting Collection of values from HashMap
 		Collection<Note> values = noteHashMap.get(notebookName);
 		
@@ -90,18 +82,17 @@ public class NoteService {
 				filteredNotes.add(n);
 				}					
 		}
-			return filteredNotes ;
-	}
-		else throw new CustomException("Given notebook '" + notebookName + "' doesn't exist, so cannot retreive anything");
+			return filteredNotes;
 	}
 	
 
 	// *** this method updates the Note contents for a specified Note title
 	// and sets the last modified time stamp *** 
 	public void updateNote(String noteTitle, Note note, String notebookName) {
-		
-		// check if the given notebook exists in notebookHashMap, otherwise throw exception
-	    if(notebookService.notebookHashMap.containsKey(notebookName)) {
+		checkIfgivenNotebookExistsInNotebookHashMap(notebookName);
+		checkIfgivenNoteExistsInNoteHashMap(notebookName, noteTitle);
+		chechIfgivenNoteTitleIsEmptyinJSON(note);
+
 		//Getting Collection of values from HashMap
 		Collection<Note> values = noteHashMap.get(notebookName);
 		
@@ -117,23 +108,63 @@ public class NoteService {
 					listOfValues.set(i, note);
 					noteHashMap.put(notebookName, listOfValues);
 				}
-			}
-	    }
-	    else throw new CustomException("Given notebook '" + notebookName + "' doesn't exist, so cannot update anything");
+			}    
 	}
 	
 
 	// *** this method deletes the specified Note *** 
 	public void deleteNote(String notebookName, String title) {
-		// check if the given notebook exists in notebookHashMap, otherwise throw exception
-	    if(notebookService.notebookHashMap.containsKey(notebookName)) {
+		checkIfgivenNotebookExistsInNotebookHashMap(notebookName);
+		checkIfgivenNoteExistsInNoteHashMap(notebookName, title);
+	
 		Collection<Note> values = noteHashMap.get(notebookName);
 		ArrayList<Note> listOfValues = new ArrayList<Note>(values);
 		listOfValues.removeIf(n->n.getTitle().equals(title));
 		noteHashMap.put(notebookName, listOfValues);
-				}
-	    
-	    else throw new CustomException("Given notebook '" + notebookName + "' doesn't exist, so cannot delete anything");
 	}
-
+	
+	   // *** Below are the methods that handles exceptions ***
+	   // If given notebook name in the request URI doesn't exist, then throw an exception
+		private void checkIfgivenNotebookExistsInNotebookHashMap(String notebookName) {
+			if(!notebookService.notebookHashMap.containsKey(notebookName)) {
+				throw new CustomException("Given notebook '" + notebookName + "' doesn't exist, enter a valid Notebook name");
+			}
+			
+		}
+		
+		// If the given note has null value in the note title, then throw an exception 
+		private void chechIfgivenNoteTitleIsEmptyinJSON(Note note) {
+			if(note.getTitle().isEmpty()) {
+				throw new CustomException("the JSON entered doesn't have a value for the title, enter a value for title to create a note");
+			}
+			
+		}
+		
+		// If the given note already exists with the same title, then throw an exception to enter a different title
+		private void checkIfgivenNoteAlreadyExistsInNoteHashMap(ArrayList<Note> listOfnotes, Note note){
+			for(Note n: listOfnotes) {
+				if(n.getTitle().equals(note.getTitle())) {	
+					throw new CustomException("Given note '" + note.getTitle() + "' already exists, so create note with a different name");
+				}	
+			}	
+			
+		}
+		
+		// if the given note doesn't exist then, throw resource not found exception
+		void checkIfgivenNoteExistsInNoteHashMap(String notebookName, String noteTitle){
+			 //Getting Collection of values from HashMap
+			Collection<Note> values = noteHashMap.get(notebookName);
+			//Creating an ArrayList of values
+			ArrayList<Note> listOfValues = new ArrayList<Note>(values);
+			ArrayList<String> noteTitles = new ArrayList<>();
+			for(Note n: listOfValues) {
+				noteTitles.add(n.getTitle());
+			}
+			
+			if(!noteTitles.contains(noteTitle))
+			{
+				throw new ResourceNotFoundException("Given note title '" + noteTitle + "' doesn't exist");
+			}
+			
+		}
 }
